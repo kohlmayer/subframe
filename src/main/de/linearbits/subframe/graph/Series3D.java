@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 import de.linearbits.objectselector.Selector;
 import de.linearbits.subframe.analyzer.Analyzer;
 import de.linearbits.subframe.io.CSVFile;
@@ -33,12 +32,16 @@ import de.linearbits.subframe.io.CSVLine;
  * 
  * @author Fabian Prasser
  */
-public class Series3D extends Series<Point3D>{
+public class Series3D extends Series<Point3D> {
+
+    protected Series3D() {
+        // emtpy by design
+    }
 
     /**
-     * Creates a series by selecting rows, 
+     * Creates a series by selecting rows,
      * grouping by x and applying two analyzers to y,
-     * the results of which will become y and z values 
+     * the results of which will become y and z values
      * 
      * @param file
      * @param selector
@@ -47,12 +50,12 @@ public class Series3D extends Series<Point3D>{
      * @param yAnalyzer
      * @param zAnalyzer
      */
-    public Series3D(CSVFile file, 
-                    Selector<String[]> selector, 
-                    Field xField, 
-                    Field yField, 
-                    Analyzer<Double> yAnalyzer, 
-                    Analyzer<Double> zAnalyzer){
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    Field xField,
+                    Field yField,
+                    Analyzer<Double> yAnalyzer,
+                    Analyzer<Double> zAnalyzer) {
 
         Map<String, Analyzer<Double>> yAnalyzers = new LinkedHashMap<String, Analyzer<Double>>();
         Map<String, Analyzer<Double>> zAnalyzers = new LinkedHashMap<String, Analyzer<Double>>();
@@ -77,12 +80,12 @@ public class Series3D extends Series<Point3D>{
         for (String x : yAnalyzers.keySet()) {
             Analyzer<?> y = yAnalyzers.get(x);
             Analyzer<?> z = zAnalyzers.get(x);
-            data.add(new Point3D(x, 
-                                 String.valueOf(y.getValue()), 
+            data.add(new Point3D(x,
+                                 String.valueOf(y.getValue()),
                                  String.valueOf(z.getValue())));
         }
     }
-    
+
     /**
      * Creates a series by selecting rows and taking three values
      * 
@@ -92,11 +95,11 @@ public class Series3D extends Series<Point3D>{
      * @param yField
      * @param zField
      */
-    public Series3D(CSVFile file, 
-                    Selector<String[]> selector, 
-                    Field xField, 
-                    Field yField, 
-                    Field zField){
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    Field xField,
+                    Field yField,
+                    Field zField) {
 
         Iterator<CSVLine> iter = file.iterator();
         while (iter.hasNext()) {
@@ -110,7 +113,6 @@ public class Series3D extends Series<Point3D>{
             }
         }
     }
-    
 
     /**
      * Creates a series by selecting rows and taking two values plus a constant y-value
@@ -121,11 +123,11 @@ public class Series3D extends Series<Point3D>{
      * @param yLabel
      * @param zField
      */
-    public Series3D(CSVFile file, 
-                    Selector<String[]> selector, 
-                    Field xField, 
-                    String yLabel, 
-                    Field zField){
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    Field xField,
+                    String yLabel,
+                    Field zField) {
 
         Iterator<CSVLine> iter = file.iterator();
         while (iter.hasNext()) {
@@ -139,11 +141,10 @@ public class Series3D extends Series<Point3D>{
             }
         }
     }
-    
 
     /**
-     * Creates a series by selecting rows, 
-     * grouping by x and y and applying the analyzer to z 
+     * Creates a series by selecting rows,
+     * grouping by x and y and applying the analyzer to z
      * 
      * @param file
      * @param selector
@@ -152,12 +153,12 @@ public class Series3D extends Series<Point3D>{
      * @param zField
      * @param analyzer
      */
-    public Series3D(CSVFile file, 
-                    Selector<String[]> selector, 
-                    Field xField, 
-                    Field yField, 
-                    Field zField, 
-                    Analyzer<Double> analyzer){
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    Field xField,
+                    Field yField,
+                    Field zField,
+                    Analyzer<Double> analyzer) {
 
         Map<Point2D, Analyzer<Double>> analyzers = new LinkedHashMap<Point2D, Analyzer<Double>>();
 
@@ -177,18 +178,82 @@ public class Series3D extends Series<Point3D>{
             }
         }
 
-        for (Entry<Point2D, Analyzer<Double>> entry : analyzers.entrySet()){
-            data.add(new Point3D(entry.getKey().x, 
-                                 entry.getKey().y, 
+        for (Entry<Point2D, Analyzer<Double>> entry : analyzers.entrySet()) {
+            data.add(new Point3D(entry.getKey().x,
+                                 entry.getKey().y,
                                  String.valueOf(entry.getValue().getValue())));
         }
     }
-    
 
     /**
-     * Creates a series by selecting rows, 
+     * Creates a series by selecting rows,
+     * grouping by x and y and grouper and applying the analyzerg to z,
+     * next it will be grouped by x and y and analyzer will be applied to the value of analyzerg
+     * 
+     * @param file
+     * @param selector
+     * @param xField
+     * @param yField
+     * @param zField
+     * @param analyzer
+     * @param grouper
+     * @param analyzerg
+     */
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    Field xField,
+                    Field yField,
+                    Field zField,
+                    Analyzer<Double> analyzer,
+                    Field grouper,
+                    Analyzer<Double> analyzerg) {
+
+        Map<Point3D, Analyzer<Double>> analyzers = new LinkedHashMap<Point3D, Analyzer<Double>>();
+
+        Iterator<CSVLine> iter = file.iterator();
+        while (iter.hasNext()) {
+            CSVLine csvline = iter.next();
+            String[] line = csvline.getData();
+            if (selector.isSelected(line)) {
+                String x = csvline.get(xField.category, xField.measure);
+                String y = csvline.get(yField.category, yField.measure);
+                String g = csvline.get(grouper.category, grouper.measure);
+
+                String z = csvline.get(zField.category, zField.measure);
+
+                Point3D point = new Point3D(x, y, g);
+                if (!analyzers.containsKey(point)) {
+                    analyzers.put(point, analyzerg.newInstance());
+                }
+                analyzers.get(point).add(Double.valueOf(z));
+            }
+        }
+
+        Map<Point2D, Analyzer<Double>> analyzers2 = new LinkedHashMap<Point2D, Analyzer<Double>>();
+        for (Entry<Point3D, Analyzer<Double>> entry : analyzers.entrySet()) {
+            String x = entry.getKey().x;
+            String y = entry.getKey().y;
+            String z = entry.getValue().getValue();
+
+            Point2D point = new Point2D(x, y);
+            if (!analyzers2.containsKey(point)) {
+                analyzers2.put(point, analyzer.newInstance());
+            }
+            analyzers2.get(point).add(Double.valueOf(z));
+
+        }
+
+        for (Entry<Point2D, Analyzer<Double>> entry : analyzers2.entrySet()) {
+            data.add(new Point3D(entry.getKey().x,
+                                 entry.getKey().y,
+                                 String.valueOf(entry.getValue().getValue())));
+        }
+    }
+
+    /**
+     * Creates a series by selecting rows,
      * grouping by a constant x and applying two analyzers to y,
-     * the results of which will become y and z values 
+     * the results of which will become y and z values
      * 
      * @param file
      * @param selector
@@ -197,12 +262,12 @@ public class Series3D extends Series<Point3D>{
      * @param yAnalyzer
      * @param zAnalyzer
      */
-    public Series3D(CSVFile file, 
-                    Selector<String[]> selector, 
-                    String xLabel, 
-                    Field yField, 
-                    Analyzer<Double> yAnalyzer, 
-                    Analyzer<Double> zAnalyzer){
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    String xLabel,
+                    Field yField,
+                    Analyzer<Double> yAnalyzer,
+                    Analyzer<Double> zAnalyzer) {
 
         Map<String, Analyzer<Double>> yAnalyzers = new LinkedHashMap<String, Analyzer<Double>>();
         Map<String, Analyzer<Double>> zAnalyzers = new LinkedHashMap<String, Analyzer<Double>>();
@@ -227,12 +292,12 @@ public class Series3D extends Series<Point3D>{
         for (String x : yAnalyzers.keySet()) {
             Analyzer<?> y = yAnalyzers.get(x);
             Analyzer<?> z = zAnalyzers.get(x);
-            data.add(new Point3D(x, 
-                                 String.valueOf(y.getValue()), 
+            data.add(new Point3D(x,
+                                 String.valueOf(y.getValue()),
                                  String.valueOf(z.getValue())));
         }
     }
-    
+
     /**
      * Creates a series by selecting rows and taking a constant and two values
      * 
@@ -242,11 +307,11 @@ public class Series3D extends Series<Point3D>{
      * @param yField
      * @param zField
      */
-    public Series3D(CSVFile file, 
-                    Selector<String[]> selector, 
-                    String xLabel, 
-                    Field yField, 
-                    Field zField){
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    String xLabel,
+                    Field yField,
+                    Field zField) {
 
         Iterator<CSVLine> iter = file.iterator();
         while (iter.hasNext()) {
@@ -259,11 +324,10 @@ public class Series3D extends Series<Point3D>{
             }
         }
     }
-    
 
     /**
-     * Creates a series by selecting rows, taking a constant x 
-     * grouping by y and applying the analyzer to z 
+     * Creates a series by selecting rows, taking a constant x
+     * grouping by y and applying the analyzer to z
      * 
      * @param file
      * @param selector
@@ -272,12 +336,12 @@ public class Series3D extends Series<Point3D>{
      * @param zField
      * @param analyzer
      */
-    public Series3D(CSVFile file, 
-                    Selector<String[]> selector, 
-                    String xLabel, 
-                    Field yField, 
-                    Field zField, 
-                    Analyzer<Double> analyzer){
+    public Series3D(CSVFile file,
+                    Selector<String[]> selector,
+                    String xLabel,
+                    Field yField,
+                    Field zField,
+                    Analyzer<Double> analyzer) {
 
         Map<Point2D, Analyzer<Double>> analyzers = new LinkedHashMap<Point2D, Analyzer<Double>>();
 
@@ -297,9 +361,9 @@ public class Series3D extends Series<Point3D>{
             }
         }
 
-        for (Entry<Point2D, Analyzer<Double>> entry : analyzers.entrySet()){
-            data.add(new Point3D(entry.getKey().x, 
-                                 entry.getKey().y, 
+        for (Entry<Point2D, Analyzer<Double>> entry : analyzers.entrySet()) {
+            data.add(new Point3D(entry.getKey().x,
+                                 entry.getKey().y,
                                  String.valueOf(entry.getValue().getValue())));
         }
     }

@@ -43,6 +43,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
 
     /**
      * Renders the given plot
+     * 
      * @param plot
      * @throws IOException
      */
@@ -52,6 +53,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
 
     /**
      * Renders the given plot, taking into account the given parameters
+     * 
      * @param plot
      * @param params
      * @throws IOException
@@ -63,6 +65,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
     /**
      * Renders the given plot, taking into account the given parameters,
      * writing to the given file
+     * 
      * @param plot
      * @param params
      * @param filename
@@ -75,6 +78,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
     /**
      * Renders the given plot, taking into account the given parameters,
      * writing to the given file. Allows keeping the GnuPlot sources.
+     * 
      * @param plot
      * @param params
      * @param filename
@@ -82,7 +86,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
      * @throws IOException
      */
     public static void
-    plot(Plot<?> plot, GnuPlotParams params, String filename, boolean keepSources) throws IOException {
+            plot(Plot<?> plot, GnuPlotParams params, String filename, boolean keepSources) throws IOException {
 
         // Create gnuplot
         GnuPlot<?> gPlot = null;
@@ -120,7 +124,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
         try {
             plot(filename);
         } catch (IOException e) {
-            if (!keepSources){
+            if (!keepSources) {
                 new File(filename + ".gp").delete();
                 new File(filename + ".dat").delete();
             }
@@ -139,6 +143,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
 
     /**
      * Renders the given plot, writing to the given file
+     * 
      * @param plot
      * @param filename
      * @throws IOException
@@ -149,6 +154,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
 
     /**
      * Renders the given plot, writing to the given file. Allows keeping the GnuPlot sources.
+     * 
      * @param plot
      * @param filename
      * @param keepSources
@@ -252,13 +258,14 @@ public abstract class GnuPlot<T extends Plot<?>> {
         }
     }
 
-    /** The plot to render*/
+    /** The plot to render */
     protected T             plot;
-    /** The parameters to use*/
+    /** The parameters to use */
     protected GnuPlotParams params;
-    
+
     /**
      * Constructs a new instance
+     * 
      * @param plot
      * @param params
      */
@@ -267,37 +274,47 @@ public abstract class GnuPlot<T extends Plot<?>> {
         this.params = params;
     }
 
-    /** Returns the data*/
+    /** Returns the data */
     protected abstract String getData();
 
-    /** Returns the GnuPlot source code*/
+    /** Returns the GnuPlot source code */
     protected abstract String getSource(String filename);
-    
+
     /**
      * Returns a list of generic gnuplot commands, which are similar for all plots
+     * 
      * @param filename
      * @param plot
      * @return
      */
     protected List<String> getGenericCommands(String filename, Plot<?> plot) {
-        
+
         List<String> gpCommands = new ArrayList<String>();
-        
-        gpCommands.add("set terminal postscript eps enhanced "+
+
+        gpCommands.add("set terminal postscript eps enhanced " +
                        (params.colorize ? "color" : "monochrome") +
-                       " size " + params.width + "," + params.height +  
-                       (params.font != null ? " font '" +params.font + "'" : ""));
+                       " size " + params.width + "," + params.height +
+                       (params.font != null ? " font '" + params.font + "'" : ""));
         gpCommands.add("set output \"" + filename + ".eps\"");
-        
+
         if (params.size != null) {
             gpCommands.add("set size " + params.size);
         }
-        
+
         if (params.ratio != null) {
             gpCommands.add("set size ratio " + params.ratio);
         }
-        
-        gpCommands.add("set offsets " + params.offsetLeft + " , " + params.offsetRight + ", " + params.offsetTop + ", " + params.offsetBottom + " ");
+
+        if (params.xticsFormat != null) {
+            gpCommands.add("set xtics format \"" + params.xticsFormat + "\"");
+        }
+
+        if (params.yticsFormat != null) {
+            gpCommands.add("set ytics format \"" + params.yticsFormat + "\"");
+        }
+
+        gpCommands.add("set offsets " + params.offsetLeft + " , " + params.offsetRight + ", " + params.offsetTop + ", " +
+                       params.offsetBottom + " ");
 
         gpCommands.add("set title \"" + plot.getTitle() + "\"");
         gpCommands.add("set xlabel \"" + plot.getLabels().x + "\"");
@@ -318,7 +335,7 @@ public abstract class GnuPlot<T extends Plot<?>> {
         if (params.minZ != null && params.maxZ != null) {
             gpCommands.add("set zrange[" + params.minZ + ":" + params.maxZ + "]");
         }
-        
+
         if (params.minY != null && params.maxY == null) {
             gpCommands.add("set yrange[" + params.minY + ":]");
         }
@@ -341,6 +358,11 @@ public abstract class GnuPlot<T extends Plot<?>> {
 
         if (params.grid) {
             gpCommands.add("set grid");
+        }
+
+        if (params.numYTicks != null && params.maxY != null && params.minY != null) {
+            double dy = (params.maxY - params.minY) / (double) params.numYTicks;
+            gpCommands.add("set ytics " + dy);
         }
 
         if (params.rotateXTicks != null) {

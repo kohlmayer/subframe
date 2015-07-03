@@ -63,7 +63,7 @@ public class BufferedMaxAnalyzer extends BufferedAnalyzer{
     @Override
     public String getValue() {
         if (count==0) throw new RuntimeException("No values specified!");
-        double result = Double.MIN_VALUE;
+        double result = Double.NEGATIVE_INFINITY;
         for (int i=0; i<count; i++){
             result = Math.max(result, values[i]);
         }

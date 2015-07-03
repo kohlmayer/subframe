@@ -15,31 +15,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package de.linearbits.subframe.analyzer.stream;
-
-import de.linearbits.subframe.analyzer.Analyzer;
+package de.linearbits.subframe.graph;
 
 /**
- * A stream analyzer that computes the maximum
- * @author Fabian Prasser
+ * A 3D series which can be manually filled with 3D Points
  */
-public class StreamMaxAnalyzer extends StreamAnalyzer{
-
+public class Series3DManual extends Series3D {
     /**
-     * Creates a new instance
+     * Creates an empty 3DSeries
      */
-    public StreamMaxAnalyzer(){
-        super(Analyzer.MAXIMUM);
-        value = Double.NEGATIVE_INFINITY;
+    public Series3DManual() {
     }
 
-    @Override
-    public void add(Double val) {
-        value = Math.max(value, val);
-    }
-
-    @Override
-    public Analyzer<Double> newInstance() {
-        return new StreamMaxAnalyzer();
+    public void addPoint(Point3D point) {
+        data.add(point);
     }
 }

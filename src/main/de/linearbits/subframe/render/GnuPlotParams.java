@@ -30,10 +30,10 @@ public class GnuPlotParams {
      * @author Fabian Prasser
      */
     public static class KeyPos {
-        
-        /** The position string*/
+
+        /** The position string */
         private final String position;
-        
+
         /**
          * Creates a new instance
          * @param position
@@ -41,33 +41,44 @@ public class GnuPlotParams {
         private KeyPos(String position) {
             this.position = position;
         }
-        
+
         @Override
-        public String toString(){
+        public String toString() {
             return this.position;
         }
-        
-        public static final KeyPos TOP_LEFT = new KeyPos("top left");
-        public static final KeyPos TOP_RIGHT = new KeyPos("top right");
-        public static final KeyPos BOTTOM_LEFT = new KeyPos("bottom left");
+
+        public static final KeyPos TOP_LEFT     = new KeyPos("top left");
+        public static final KeyPos TOP_RIGHT    = new KeyPos("top right");
+        public static final KeyPos BOTTOM_LEFT  = new KeyPos("bottom left");
         public static final KeyPos BOTTOM_RIGHT = new KeyPos("bottom right");
-        public static final KeyPos OUTSIDE_TOP = new KeyPos("out horiz center top");
-        public static final KeyPos NONE = new KeyPos("none");
+        public static final KeyPos OUTSIDE_TOP  = new KeyPos("out horiz center top");
+        public static final KeyPos NONE         = new KeyPos("none");
+
         public static final KeyPos AT(double x, double y) {
-            return new KeyPos("at "+x+","+y);
+            return new KeyPos("at " + x + "," + y);
         }
+
         public static final KeyPos AT(double x, double y, String anchor) {
-            return new KeyPos("at "+x+","+y+" "+anchor);
+            return new KeyPos("at " + x + "," + y + " " + anchor);
         }
     }
 
-	/** colourValues. */
-	public String[] colors = new String[] { "1D4599", "11AD34", "E62B17",
-											"E69F17", "2F3F60", "2F6C3D", "8F463F", "8F743F", "031A49",
-											"025214", "6D0D03", "6D4903", "7297E6", "67EB84", "F97A6D",
-											"F9C96D", "A9BDE6", "A6EBB5", "F9B7B0", "F9E0B0" };
+    public String[] lineStyle               = new String[] {
+                                            "pt 1 ps 1 lw 2 lt 1 ",
+                                            "pt 2 ps 1 lw 2 lt 1",
+                                            "pt 3 ps 1 lw 2 lt 1",
+                                            "pt 4 ps 1 lw 2 lt 1",
+                                            "pt 6 ps 1 lw 2 lt 1",
+                                            "pt 8 ps 1 lw 2 lt 1",
+                                            "pt 10 ps 1 lw 2 lt 1" };
 
-    /** Should the plot be colorized*/
+    /** colourValues. */
+    public String[] colors                  = new String[] { "1D4599", "11AD34", "E62B17",
+                                            "E69F17", "2F3F60", "2F6C3D", "8F463F", "8F743F", "031A49",
+                                            "025214", "6D0D03", "6D4903", "7297E6", "67EB84", "F97A6D",
+                                            "F9C96D", "A9BDE6", "A6EBB5", "F9B7B0", "F9E0B0" };
+
+    /** Should the plot be colorized */
     public boolean  colorize                = false;
 
     /** Logarithmic x axis */
@@ -100,13 +111,13 @@ public class GnuPlotParams {
     /** The height of the output (inches) */
     public double   height                  = 3.5d;
 
-    /** Offset*/
+    /** Offset */
     public double   offsetLeft              = 0;
-    /** Offset*/
+    /** Offset */
     public double   offsetRight             = 0;
-    /** Offset*/
+    /** Offset */
     public double   offsetBottom            = 0;
-    /** Offset*/
+    /** Offset */
     public double   offsetTop               = 0;
 
     /** The width of the box */
@@ -119,13 +130,22 @@ public class GnuPlotParams {
     public Boolean  grid                    = true;
     /** The keypos */
     public KeyPos   keypos                  = KeyPos.TOP_RIGHT;
-    /** Print the actual values into the plot*/
+    /** Print the actual values into the plot */
     public Boolean  printValues             = false;
     /** Format string for values in the plot */
     public String   printValuesFormatString = "%.2f";
     /** Offset for labels in the plot */
     public double   printValuesOffset       = +0.5d;
 
-    /** Font specification*/
+    /** Font specification */
     public String   font                    = null;
+
+    /** Specify the number of yTics */
+    public Integer  numYTicks               = null;
+
+    /** XTics format */
+    public String   xticsFormat             = null;
+    /** YTics format */
+    public String   yticsFormat             = null;
+
 }

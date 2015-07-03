@@ -389,6 +389,97 @@ public class Benchmark {
     }
     
     /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues(Object value){
+        for (int i = 0; i < currentRun.length; i++){
+            addValue(i, value);
+        }
+    }
+    
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues(Double value){
+        for (int i = 0; i < currentRun.length; i++){
+            addValue(i, value);
+        }
+    }
+    
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( Float value) {
+        addValues(Double.valueOf(value));
+    }
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( float value) {
+        addValues(Double.valueOf(value));
+    }
+
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( Long value) {
+        addValues(Double.valueOf(value));
+    }
+    
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( long value) {
+        addValues(Double.valueOf(value));
+    }
+
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( Character value) {
+        addValues(Double.valueOf(value));
+    }
+    
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( char value) {
+        addValues(Double.valueOf(value));
+    }
+    
+    /**
+     * Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( Integer value) {
+        addValues(Double.valueOf(value));
+    }
+    
+    /**
+     *Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( int value) {
+        addValues(Double.valueOf(value));
+    }
+    
+    /**
+     *Adds the given object to all analyzers/measurements
+     * @param value
+     */
+    public void addValues( double value) {
+        addValues(Double.valueOf(value));
+    }
+    
+    /**
      * Adds the given value
      * @param measure
      * @param value
@@ -632,6 +723,15 @@ public class Benchmark {
 
     public void startUsedBytesMX(int measure) {
         measures.startUsedBytesMX(measure);
+    }
+    
+    /**
+     * Clears all collected data
+     */
+    public void clear(){
+        this.runs            = new ArrayList<Analyzer<?>[][]>();
+        this.runData         = new ArrayList<String[]>();
+        this.currentRun      = null;
     }
 
     /**
